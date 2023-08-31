@@ -15,6 +15,7 @@ import kg.alfit.tasklist.web.mapper.UserMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class UserController {
     TaskMapper taskMapper;
 
     @Operation(summary = "Get user by id")
+    @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
     @GetMapping("{id}")
     public UserDTO getById(@PathVariable Long id) {
         User user = userService.getById(id);
@@ -40,6 +42,7 @@ public class UserController {
     }
 
     @Operation(summary = "Get all user task")
+    @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
     @GetMapping("{id}/tasks")
     public List<TaskDTO> getTasksByUserId(@PathVariable Long id) {
         List<Task> tasks = taskService.getAllByUserId(id);
@@ -47,6 +50,7 @@ public class UserController {
     }
 
     @Operation(summary = "Create task for user")
+    @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
     @PostMapping("{id}/tasks")
     public TaskDTO createTask(@PathVariable Long id,
                               @Validated(OnCreate.class) @RequestBody TaskDTO taskDTO) {
@@ -55,6 +59,7 @@ public class UserController {
     }
 
     @Operation(summary = "Update user")
+    @PreAuthorize("@customSecurityExpression.canAccessUser(#userDTO.id)")
     @PutMapping
     public UserDTO updateUser(@Validated(OnUpdate.class) @RequestBody UserDTO userDTO) {
         User user = userMapper.toEntity(userDTO);
@@ -62,6 +67,7 @@ public class UserController {
     }
 
     @Operation(summary = "Delete user by id")
+    @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
     @DeleteMapping("{id}")
     public void deleteUserById(@PathVariable Long id) {
         userService.delete(id);

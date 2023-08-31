@@ -10,6 +10,7 @@ import kg.alfit.tasklist.web.mapper.TaskMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class TaskController {
 
 
     @Operation(summary = "Get task by id")
+    @PreAuthorize("canAccessTask(#id)")
     @GetMapping("/{id}")
     public TaskDTO getById(@PathVariable Long id) {
         Task task = taskService.getById(id);
@@ -32,12 +34,14 @@ public class TaskController {
     }
 
     @Operation(summary = "Update task")
+    @PreAuthorize("canAccessTask(#dto.id)")
     @PutMapping
     public TaskDTO update(@Validated(OnUpdate.class) @RequestBody TaskDTO dto) {
         Task task = taskMapper.toEntity(dto);
         return taskMapper.toDto(taskService.update(task));
     }
     @Operation(summary = "Delete task")
+    @PreAuthorize("canAccessTask(#id)")
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
         taskService.delete(id);

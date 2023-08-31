@@ -2,6 +2,7 @@ package kg.alfit.tasklist.config;
 
 import kg.alfit.tasklist.web.security.JwtTokenFilter;
 import kg.alfit.tasklist.web.security.JwtTokenProvider;
+import kg.alfit.tasklist.web.security.expression.CustomSecurityExceptionHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -10,9 +11,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,6 +29,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationConfig {
@@ -65,6 +72,13 @@ public class ApplicationConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public MethodSecurityExpressionHandler expressionHandler() {
+        DefaultMethodSecurityExpressionHandler expressionHandler = new CustomSecurityExceptionHandler();
+        expressionHandler.setApplicationContext(applicationContext);
+        return expressionHandler;
     }
 
 

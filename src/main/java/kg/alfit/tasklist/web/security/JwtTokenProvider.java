@@ -48,12 +48,10 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("id", userId);
         claims.put("roles", resolveRoles(roles));
-        Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + jwtProperties.getAccess());
+        Instant expirationDate = Instant.now().plus(jwtProperties.getAccess(), ChronoUnit.HOURS);
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expirationDate)
+                .setExpiration(Date.from(expirationDate))
                 .signWith(key)
                 .compact();
 
@@ -62,12 +60,10 @@ public class JwtTokenProvider {
     public String createRefreshToken(Long userId, String username) {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("id", userId);
-        Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + jwtProperties.getRefresh());
+        Instant expirationDate = Instant.now().plus(jwtProperties.getAccess(), ChronoUnit.HOURS);
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expirationDate)
+                .setExpiration(Date.from(expirationDate))
                 .signWith(key)
                 .compact();
 

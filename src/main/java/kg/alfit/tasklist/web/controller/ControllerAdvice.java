@@ -6,6 +6,7 @@ import kg.alfit.tasklist.domain.exception.AccessDeniedException;
 import kg.alfit.tasklist.domain.exception.ExceptionBody;
 import kg.alfit.tasklist.domain.exception.ResourceMappingException;
 import kg.alfit.tasklist.domain.exception.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class ControllerAdvice {
 
@@ -69,12 +71,14 @@ public class ControllerAdvice {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionBody handleAuthenticationException(AuthenticationException e) {
+        log.error("", e);
         return new ExceptionBody("Authentication failed!");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionBody handleException(Exception e) {
+        log.error("", e);
         return new ExceptionBody("Internal error");
     }
 }

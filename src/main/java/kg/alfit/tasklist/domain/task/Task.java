@@ -4,11 +4,12 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Task {
+public class Task implements Serializable {
     Long id;
     String title;
     String description;
