@@ -1,5 +1,7 @@
 package kg.alfit.tasklist.config;
 
+import io.minio.MinioClient;
+import kg.alfit.tasklist.service.props.MinioProperties;
 import kg.alfit.tasklist.web.security.JwtTokenFilter;
 import kg.alfit.tasklist.web.security.JwtTokenProvider;
 import kg.alfit.tasklist.web.security.expression.CustomSecurityExceptionHandler;
@@ -37,6 +39,7 @@ public class ApplicationConfig {
 
     final JwtTokenProvider tokenProvider;
     final ApplicationContext applicationContext;
+    final MinioProperties minioProperties;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -79,6 +82,14 @@ public class ApplicationConfig {
         DefaultMethodSecurityExpressionHandler expressionHandler = new CustomSecurityExceptionHandler();
         expressionHandler.setApplicationContext(applicationContext);
         return expressionHandler;
+    }
+
+    @Bean
+    public MinioClient minioClient() {
+        return MinioClient.builder()
+                .endpoint(minioProperties.getUrl())
+                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                .build();
     }
 
 

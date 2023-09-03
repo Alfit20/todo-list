@@ -5,9 +5,6 @@ import kg.alfit.tasklist.web.dto.user.UserDTO;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public interface UserMapper extends Mappable<User, UserDTO> {
 
-    UserDTO toDto(User user);
-
-    User toEntity(UserDTO userDTO);
 }

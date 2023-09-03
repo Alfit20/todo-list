@@ -2,10 +2,7 @@ package kg.alfit.tasklist.web.controller;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import kg.alfit.tasklist.domain.exception.AccessDeniedException;
-import kg.alfit.tasklist.domain.exception.ExceptionBody;
-import kg.alfit.tasklist.domain.exception.ResourceMappingException;
-import kg.alfit.tasklist.domain.exception.ResourceNotFoundException;
+import kg.alfit.tasklist.domain.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -73,6 +70,13 @@ public class ControllerAdvice {
     public ExceptionBody handleAuthenticationException(AuthenticationException e) {
         log.error("", e);
         return new ExceptionBody("Authentication failed!");
+    }
+
+    @ExceptionHandler(ImageUploadException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionBody handleImageUploadException(ImageUploadException e) {
+        log.error("", e);
+        return new ExceptionBody(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
